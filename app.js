@@ -13,14 +13,26 @@ document.addEventListener('DOMContentLoaded', function() {
         ions.forEach(ion => {
             const ionElement = document.createElement('div');
             ionElement.className = `ion-item ${type}`;
-            ionElement.innerHTML = `
+            
+            // Create image element for the sidebar preview
+            const img = document.createElement('img');
+            img.src = ion.image;
+            img.alt = ion.symbol;
+            img.className = 'ion-preview';
+            
+            ionElement.appendChild(img);
+            
+            // Add text information
+            const infoDiv = document.createElement('div');
+            infoDiv.innerHTML = `
                 <div>${ion.symbol}</div>
-                <div>${ion.name}</div>
+                <div class="ion-name">${ion.name}</div>
                 <div class="charge">${type === 'cation' ? '+' : '-'}${ion.charge}</div>
             `;
+            ionElement.appendChild(infoDiv);
             
             ionElement.addEventListener('click', () => {
-                puzzle.addIon(type, ion.symbol, ion.name, ion.charge, ion.color);
+                puzzle.addIon(type, ion.symbol, ion.name, ion.charge, ion.image);
             });
             
             listElement.appendChild(ionElement);

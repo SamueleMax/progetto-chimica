@@ -7,6 +7,7 @@ class ChemistryPuzzle {
         this.offsetX = 0;
         this.offsetY = 0;
         this.isDragging = false;
+        this.images = {}; // Cache for loaded images
 
         // Resize and render
         this.resizeCanvas();
@@ -85,6 +86,53 @@ class ChemistryPuzzle {
             this.draggingIon = null;
         });
         
+        // Touch events for mobile support
+        this.canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const rect = this.canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const touchX = touch.clientX - rect.left;
+            const touchY = touch.clientY - rect.top;
+            
+            for (let i = this.ions.length - 1; i >= 0; i--) {
+                const ion = this.ions[i];
+                if (this.isPointInIon(touchX, touchY, ion)) {
+                    this.draggingIon = ion;
+                    this.offsetX = touchX - ion.x;
+                    this.offsetY = touchY - ion.y;
+                    this.isDragging = true;
+                    
+                    this.ions.splice(i, 1);
+                    this.ions.push(ion);
+                    break;
+                }
+            }
+        });
+        
+        this.canvas.addEventListener('touchmove', (e) => {
+            if (!this.isDragging || !this.draggingIon) return;
+            e.preventDefault();
+            
+            const rect = this.canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const touchX = touch.clientX - rect.left;
+            const touchY = touch.clientY - rect.top;
+            
+            this.draggingIon.x = touchX - this.offsetX;
+            this.draggingIon.y = touchY - this.offsetY;
+            
+            this.checkSnapToConnections();
+            this.updateFormula();
+        });
+        
+        this.canvas.addEventListener('touchend', () => {
+            if (this.draggingIon) {
+                this.finalizeSnapping();
+            }
+            this.isDragging = false;
+            this.draggingIon = null;
+        });
+        
         // Window resize event
         window.addEventListener('resize', () => {
             this.resizeCanvas();
@@ -106,17 +154,27 @@ class ChemistryPuzzle {
         );
     }
     
-    addIon(type, symbol, name, charge, color) {
-        // Create ion with rectangular dimensions
-        const width = 80;
-        const height = 60;
+    addIon(type, symbol, name, charge, image) {
+        // Create ion with image
+        const width = 120; // Width of the puzzle piece
+        const height = 80; // Height of the puzzle piece
+        
+        // Load the image if not already cached
+        if (!this.images[image]) {
+            const img = new Image();
+            img.src = image;
+            img.onload = () => {
+                this.render();
+            };
+            this.images[image] = img; // Store reference even before loading
+        }
         
         const ion = {
             type, // 'cation' or 'anion'
             symbol,
             name,
             charge,
-            color,
+            image,
             x: type === 'cation' ? this.canvas.width * 0.25 : this.canvas.width * 0.75,
             y: this.canvas.height / 2,
             width,
@@ -171,7 +229,7 @@ class ChemistryPuzzle {
                 );
                 
                 // If close enough to snap
-                if (distance < 25) {
+                if (distance < 30) {
                     // Add to connections if not already connected
                     if (!cation.connections.includes(anion)) {
                         cation.connections.push(anion);
@@ -279,7 +337,7 @@ class ChemistryPuzzle {
         const dy = -30 + spacing * (index + 1);
         
         return {
-            dx: 40, // Half width
+            dx: 60, // Half width
             dy: dy
         };
     }
@@ -291,85 +349,79 @@ class ChemistryPuzzle {
         
         for (const group of connectedGroups) {
             if (group.length > 1) {
-                // Check if there are both cations and anions in the group
-                const cations = group.filter(ion => ion.type === 'cation');
-                const anions = group.filter(ion => ion.type === 'anion');
+                // Count ions of each type
+                const ionCounts = {};
                 
-                if (cations.length > 0 && anions.length > 0) {
-                    // Count ions of each type
-                    const ionCounts = {};
-                    
-                    for (const ion of group) {
-                        if (!ionCounts[ion.symbol]) {
-                            ionCounts[ion.symbol] = {
-                                count: 1,
-                                charge: ion.charge,
-                                type: ion.type
-                            };
-                        } else {
-                            ionCounts[ion.symbol].count++;
-                        }
+                for (const ion of group) {
+                    if (!ionCounts[ion.symbol]) {
+                        ionCounts[ion.symbol] = {
+                            count: 1,
+                            charge: ion.charge,
+                            type: ion.type
+                        };
+                    } else {
+                        ionCounts[ion.symbol].count++;
                     }
+                }
+                
+                // Calculate total charge for cations and anions
+                let totalPositiveCharge = 0;
+                let totalNegativeCharge = 0;
+                
+                for (const [symbol, data] of Object.entries(ionCounts)) {
+                    if (data.type === 'cation') {
+                        totalPositiveCharge += data.charge * data.count;
+                    } else {
+                        totalNegativeCharge += data.charge * data.count;
+                    }
+                }
+                
+                // Check if charges are balanced
+                if (totalPositiveCharge === totalNegativeCharge) {
+                    // Build formula using ion count
+                    let formula = '';
                     
-                    // Calculate total charge for cations and anions
-                    let totalPositiveCharge = 0;
-                    let totalNegativeCharge = 0;
-                    
+                    // First, add cations
                     for (const [symbol, data] of Object.entries(ionCounts)) {
                         if (data.type === 'cation') {
-                            totalPositiveCharge += data.charge * data.count;
-                        } else {
-                            totalNegativeCharge += data.charge * data.count;
+                            formula += symbol;
+                            if (data.count > 1) {
+                                formula += data.count;
+                            }
                         }
                     }
                     
-                    // Check if charges are balanced
-                    if (totalPositiveCharge === totalNegativeCharge) {
-                        // Build formula using ion count
-                        let formula = '';
-                        
-                        // First, add cations
-                        for (const [symbol, data] of Object.entries(ionCounts)) {
-                            if (data.type === 'cation') {
+                    // Then add anions
+                    for (const [symbol, data] of Object.entries(ionCounts)) {
+                        if (data.type === 'anion') {
+                            // If anion is polyatomic and count > 1, wrap in parentheses
+                            if (symbol.length > 1 && data.count > 1) {
+                                formula += `(${symbol})`;
+                            } else {
                                 formula += symbol;
-                                if (data.count > 1) {
-                                    formula += data.count;
-                                }
+                            }
+                            
+                            if (data.count > 1) {
+                                formula += data.count;
                             }
                         }
-                        
-                        // Then add anions
-                        for (const [symbol, data] of Object.entries(ionCounts)) {
-                            if (data.type === 'anion') {
-                                // If anion is polyatomic and count > 1, wrap in parentheses
-                                if (symbol.length > 1 && data.count > 1) {
-                                    formula += `(${symbol})`;
-                                } else {
-                                    formula += symbol;
-                                }
-                                
-                                if (data.count > 1) {
-                                    formula += data.count;
-                                }
-                            }
-                        }
-                        
-                        formulas.push(formula);
                     }
+                    
+                    formulas.push(formula);
                 }
             }
         }
         
         // Check if we have a specific valid formula
         const validFormulas = [
-            "Al2(SO4)3", 
+            "Al2(PO4)3", 
             "NaCl", 
-            "MgO", 
-            "CaCO3", 
-            "Fe2O3", 
-            "KNO3", 
-            "AlPO4"
-            // Add more valid formulas as needed
+            "BaCO3", 
+            "Al(CO3)3", 
+            "Na3PO4",
+            "BaCl2",
+            "Ba3(PO4)2",
+            "AlCl3"
         ];
         
         // Check if any formulas we found are valid
@@ -499,65 +551,41 @@ class ChemistryPuzzle {
     }
     
     drawIon(ion) {
-        const width = ion.width;
-        const height = ion.height;
-        const x = ion.x - width / 2;
-        const y = ion.y - height / 2;
-        
-        // Draw the main rectangle
-        this.ctx.beginPath();
-        this.ctx.rect(x, y, width, height);
-        this.ctx.fillStyle = ion.color;
-        this.ctx.fill();
-        this.ctx.strokeStyle = '#2c3e50';
-        this.ctx.lineWidth = 2;
-        this.ctx.stroke();
-        
-        // Draw the connection features based on ion type
-        if (ion.type === 'cation') {
-            // Draw holes on the right side
-            const spacing = height / (ion.charge + 1);
-            for (let i = 0; i < ion.charge; i++) {
-                const holeY = y + spacing * (i + 1);
-                const holeX = x + width;
-                
-                // Draw a semicircle indent for the hole
-                this.ctx.beginPath();
-                this.ctx.arc(holeX, holeY, 10, Math.PI / 2, -Math.PI / 2, true);
-                this.ctx.fillStyle = '#ffffff';
-                this.ctx.fill();
-                this.ctx.strokeStyle = '#2c3e50';
-                this.ctx.lineWidth = 1;
-                this.ctx.stroke();
-            }
+        // Draw the ion using its image
+        const img = this.images[ion.image];
+        if (img && img.complete) {
+            const x = ion.x - ion.width / 2;
+            const y = ion.y - ion.height / 2;
+            this.ctx.drawImage(img, x, y, ion.width, ion.height);
+            
+            // No need to draw symbol or charge as they should be in the image
         } else {
-            // Draw connectors on the left side
-            const spacing = height / (ion.charge + 1);
-            for (let i = 0; i < ion.charge; i++) {
-                const connectorY = y + spacing * (i + 1);
-                const connectorX = x;
-                
-                // Draw a semicircle protrusion for the connector
-                this.ctx.beginPath();
-                this.ctx.arc(connectorX, connectorY, 10, -Math.PI / 2, Math.PI / 2, false);
-                this.ctx.fillStyle = ion.color;
-                this.ctx.fill();
-                this.ctx.strokeStyle = '#2c3e50';
-                this.ctx.lineWidth = 1;
-                this.ctx.stroke();
-            }
+            // Fallback if image isn't loaded yet
+            const width = ion.width;
+            const height = ion.height;
+            const x = ion.x - width / 2;
+            const y = ion.y - height / 2;
+            
+            // Draw a placeholder rectangle
+            this.ctx.beginPath();
+            this.ctx.rect(x, y, width, height);
+            this.ctx.fillStyle = ion.type === 'cation' ? '#3498db' : '#e74c3c';
+            this.ctx.fill();
+            this.ctx.strokeStyle = '#2c3e50';
+            this.ctx.lineWidth = 2;
+            this.ctx.stroke();
+            
+            // Draw ion symbol as text
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.font = 'bold 16px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.textBaseline = 'middle';
+            this.ctx.fillText(ion.symbol, ion.x, ion.y);
+            
+            // Draw charge
+            const chargeText = ion.type === 'cation' ? `+${ion.charge}` : `-${ion.charge}`;
+            this.ctx.font = '12px Arial';
+            this.ctx.fillText(chargeText, ion.x, ion.y + height / 2 - 15);
         }
-        
-        // Draw ion symbol
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.font = 'bold 16px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.textBaseline = 'middle';
-        this.ctx.fillText(ion.symbol, ion.x, ion.y);
-        
-        // Draw charge
-        const chargeText = ion.type === 'cation' ? `+${ion.charge}` : `-${ion.charge}`;
-        this.ctx.font = '12px Arial';
-        this.ctx.fillText(chargeText, ion.x, ion.y + height / 2 + 15);
     }
 }
