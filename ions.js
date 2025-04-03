@@ -38,6 +38,12 @@ const IONS = {
             name: "Phosphate",
             charge: 3,
             image: "assets/PO.png"
+        },
+        {
+            symbol: "SO4",
+            name: "Sulfate",
+            charge: 2,
+            image: "assets/SO.png"
         }
     ]
 };

@@ -302,9 +302,6 @@ class ChemistryPuzzle {
     
     getConnectionPoint(ion, index, type) {
         // Get the coordinates of a specific connection point
-        // For cations: holes are on the right side
-        // For anions: connectors are on the left side
-        
         const halfWidth = ion.width / 2;
         const halfHeight = ion.height / 2;
         
@@ -317,11 +314,11 @@ class ChemistryPuzzle {
                 y: y
             };
         } else if (type === 'connector' && ion.type === 'anion') {
-            // Connectors are on the left side of anions
+            // UPDATED: Connectors are on the RIGHT side of anions (flipped)
             const spacing = ion.height / (ion.charge + 1);
             const y = ion.y - halfHeight + spacing * (index + 1);
             return {
-                x: ion.x - halfWidth,
+                x: ion.x + halfWidth, // Changed from minus to plus
                 y: y
             };
         }
