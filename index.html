@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemistry Ionic Compounds Puzzle</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ionic Compound Builder</h1>
+            <p>Drag cations and anions to form balanced ionic compounds!</p>
+        </header>
+        
+        <main>
+            <div class="sidebar">
+                <div class="ion-section">
+                    <h2>Cations (+)</h2>
+                    <div class="ion-list" id="cation-list">
+                        <!-- Cations will be added here dynamically -->
+                    </div>
+                </div>
+                <div class="ion-section">
+                    <h2>Anions (-)</h2>
+                    <div class="ion-list" id="anion-list">
+                        <!-- Anions will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="canvas-container">
+                <canvas id="puzzle-canvas"></canvas>
+                <div class="formula-display">
+                    <h3>Chemical Formula:</h3>
+                    <div id="formula-output">Drag ions to create a compound</div>
+                </div>
+                <button id="clear-canvas">Clear Canvas</button>
+            </div>
+        </main>
+        
+        <div class="instructions">
+            <h3>How to Play:</h3>
+            <p>1. Drag cations (positive ions) and anions (negative ions) from the sidebar to the canvas.</p>
+            <p>2. Match puzzle pieces by filling all "holes" with "connectors" to create balanced compounds.</p>
+            <p>3. The formula will update automatically when a valid compound is formed.</p>
+        </div>
+    </div>
+
+    <script src="ions.js"></script>
+    <script src="puzzle.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
