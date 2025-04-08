@@ -40,7 +40,17 @@ function initCanvas() {
 }
 
 function renderCanvas() {
+    const canvas = document.querySelector('#canvas');
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
+    canvasElements.forEach(element => {
+        const img = new Image();
+        img.src = `assets/${element}.png`;
+        img.onload = () => {
+            context.drawImage(img, 0, 0, this.width, this.height);
+        };
+    });
 }
 
 function resetCanvas() {
