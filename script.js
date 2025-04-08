@@ -14,16 +14,24 @@ function initElements() {
     elements.forEach(element => {
         element.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData('text/plain', element.dataset.element);
-            canvas.classList.add('canvas-dragover');
+            canvas.classList.add('canvas-dragstart');
         });
         element.addEventListener('dragend', () => {
-            canvas.classList.remove('canvas-dragover');
+            canvas.classList.remove('canvas-dragstart');
         });
     });
 }
 
 function initCanvas() {
     const canvas = document.querySelector('#canvas');
+
+    canvas.addEventListener('dragenter', (e) => {
+        canvas.classList.add('canvas-dragenter');
+    });
+
+    canvas.addEventListener('dragleave', () => {
+        canvas.classList.remove('canvas-dragenter');
+    });
     
     canvas.addEventListener('dragover', (e) => {
         e.preventDefault(); // Allow dropping
@@ -31,6 +39,8 @@ function initCanvas() {
 
     canvas.addEventListener('drop', (e) => {
         e.preventDefault();
+
+        canvas.classList.remove('canvas-dragenter');
 
         // This contains the element name
         const data = e.dataTransfer.getData('text/plain');

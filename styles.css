@@ -53,10 +53,15 @@ aside {
     background-color: #f0f0f0;
     border-radius: 8px;
     text-align: center;
-    cursor: pointer;
+    cursor: grab;
 }
 .sidebar-elements > div:hover {
     background-color: #e0e0e0;
+}
+.sidebar-elements > div:active {
+    cursor: grabbing;
+    border: 2px dashed #00000075;
+    background-color: #a5a5a58f;
 }
 
 .sidebar-elements > div > img {
@@ -77,7 +82,11 @@ canvas {
     border: 1px solid black;
 }
 
-.canvas-dragover {
+.canvas-dragstart {
     border: 2px dashed #000;
     background-color: rgba(0, 0, 0, 0.1);
+}
+
+.canvas-dragenter {
+    background-color: rgba(255, 230, 2, 0.267);
 }
