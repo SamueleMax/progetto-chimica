@@ -85,8 +85,21 @@ canvas {
 .canvas-dragstart {
     border: 2px dashed #000;
     background-color: rgba(0, 0, 0, 0.1);
+    animation: twiddle 1s linear infinite;
 }
 
 .canvas-dragenter {
     background-color: rgba(255, 230, 2, 0.267);
+}
+
+@keyframes twiddle {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-5px) rotate(-2deg);
+    }
+    75% {
+        transform: translateY(5px) rotate(2deg);
+    }
 }
