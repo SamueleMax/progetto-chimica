@@ -1,66 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Costruzione di un Sale - Chemistry Game</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Costruzione di un Sale</h1>
-        <div class="game-area">
-            <div class="sidebar">
-                <h2>Elements</h2>
-                <div class="element-group">
-                    <h3>Cations</h3>
-                    <div class="element-container">
-                        <div class="element" data-element="Al" data-charge="3" data-type="cation">
-                            <img src="assets/Al.png" alt="Aluminum">
-                            <span class="element-info">Al³⁺</span>
-                        </div>
-                        <div class="element" data-element="Ba" data-charge="2" data-type="cation">
-                            <img src="assets/Ba.png" alt="Barium">
-                            <span class="element-info">Ba²⁺</span>
-                        </div>
-                        <div class="element" data-element="Na" data-charge="1" data-type="cation">
-                            <img src="assets/Na.png" alt="Sodium">
-                            <span class="element-info">Na⁺</span>
-                        </div>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Progetto Chimica</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <h1>Progetto Chimica</h1>
+        </header>
+        <main>
+            <!-- Sidebar con gli elementi-->
+            <aside>
+                <h2>Elementi</h2>
+                <!-- Elementi-->
+                <div class="sidebar-elements" id="sidebarElements">
+                    <div draggable="true" data-element="Al">
+                        <img draggable="false" src="assets/Al.png" alt="Al">
+                        <p>Al</p>
+                    </div>
+                    <div draggable="true" data-element="Ba">
+                        <img draggable="false" src="assets/Ba.png" alt="Ba">
+                        <p>Ba</p>
+                    </div>
+                    <div draggable="true" data-element="Cl">
+                        <img draggable="false" src="assets/Cl.png" alt="Cl">
+                        <p>Cl</p>
+                    </div>
+                    <div draggable="true" data-element="CO">
+                        <img draggable="false" src="assets/CO.png" alt="CO">
+                        <p>CO</p>
+                    </div>
+                    <div draggable="true" data-element="Na">
+                        <img draggable="false" src="assets/Na.png" alt="Na">
+                        <p>Na</p>
+                    </div>
+                    <div draggable="true" data-element="PO">
+                        <img draggable="false" src="assets/PO.png" alt="PO">
+                        <p>PO</p>
+                    </div>
+                    <div draggable="true" data-element="SO">
+                        <img draggable="false" src="assets/SO.png" alt="SO">
+                        <p>SO</p>
                     </div>
                 </div>
-                <div class="element-group">
-                    <h3>Anions</h3>
-                    <div class="element-container">
-                        <div class="element" data-element="Cl" data-charge="1" data-type="anion">
-                            <img src="assets/Cl.png" alt="Chloride">
-                            <span class="element-info">Cl⁻</span>
-                        </div>
-                        <div class="element" data-element="SO4" data-charge="2" data-type="anion">
-                            <img src="assets/SO.png" alt="Sulfate">
-                            <span class="element-info">SO₄²⁻</span>
-                        </div>
-                        <div class="element" data-element="PO4" data-charge="3" data-type="anion">
-                            <img src="assets/PO.png" alt="Phosphate">
-                            <span class="element-info">PO₄³⁻</span>
-                        </div>
-                        <div class="element" data-element="CO3" data-charge="2" data-type="anion">
-                            <img src="assets/CO.png" alt="Carbonate">
-                            <span class="element-info">CO₃²⁻</span>
-                        </div>
-                    </div>
-                </div>
-                <button id="resetBtn">Reset Canvas</button>
-            </div>
-            <div class="canvas-container">
-                <canvas id="gameCanvas"></canvas>
-                <div id="formula-display">
-                    <h3>Chemical Formula:</h3>
-                    <div id="formula"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script src="scripts.js"></script>
-</body>
+
+                <button type="button" id="resetButton">Resetta</button>
+            </aside>
+
+            <!-- Canvas -->
+            <canvas id="canvas" width="750" height="100"></canvas>
+        </main>
+        <footer>
+            <p>&copy; 2023 Progetto Chimica</p>
+        </footer>
+        <script src="script.js"></script>
+    </body>
 </html>
