@@ -58,7 +58,7 @@ function renderCanvas() {
         const img = new Image();
         img.src = `assets/${element}.png`;
         img.onload = () => {
-            context.drawImage(img, 0, 0, this.width, this.height);
+            context.drawImage(img, 0, 0, 300, 300);
         };
     });
 }
