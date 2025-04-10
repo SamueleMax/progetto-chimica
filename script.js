@@ -150,6 +150,33 @@ function resetCanvas() {
     renderCanvas();
 }
 
+function generaFormulaChimica(nomeCatione, nomeAnione) {
+    const cat = elementi[nomeCatione];
+    const an = elementi[nomeAnione];
+  
+    if (!cat || !an) return "Elemento non valido";
+  
+    const caricaPos = cat.carica;
+    const caricaNeg = -an.carica; // anione ha carica negativa
+  
+    const rapporto = minimoComuneMultiplo(caricaPos, caricaNeg);
+    const numCat = rapporto / caricaPos;
+    const numAn = rapporto / caricaNeg;
+  
+    const sub = n => n > 1 ? n : "";
+  
+    return cat.simbolo + sub(numCat) + an.simbolo + sub(numAn);
+  }
+  
+  function minimoComuneMultiplo(a, b) {
+    return (a * b) / massimoComuneDivisore(a, b);
+  }
+  
+  function massimoComuneDivisore(a, b) {
+    return b === 0 ? a : massimoComuneDivisore(b, a % b);
+  }
+  
+
 document.addEventListener('DOMContentLoaded', () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
