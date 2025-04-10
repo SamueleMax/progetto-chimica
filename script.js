@@ -75,7 +75,7 @@ function renderCanvas() {
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
-    const imgScale = 0.1
+    const imgScale = 0.1;
 
     // Render cations
     if (cation.name) {
@@ -123,7 +123,6 @@ function calcElementsPos(type, imgScale, canvas) {
             let posX = canvas.width / 2 - cationWidth + 11;
 
             // Calculate y pos, considering the number of elements that have been added
-            // TODO: Center vertically
             let posY = height * i;
 
             positions.push({ x: posX, y: posY });
@@ -150,12 +149,20 @@ function resetCanvas() {
     renderCanvas();
 }
 
+function revealFormula() {
+    document.querySelector('#formula').textContent = `Formula bilanciata: ${calcFormula()}`;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
     document.querySelector('#resetButton').addEventListener('click', () => {
         resetCanvas();
+    });
+
+    document.querySelector('#revealButton').addEventListener('click', () => {
+        revealFormula();
     });
 
     initElements();
