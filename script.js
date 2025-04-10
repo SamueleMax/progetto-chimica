@@ -116,7 +116,7 @@ function calcElementPos(type, imgScale, canvas) {
         // Calculate x pos, putting the img in the left half of the canvas
         posX = canvas.width / 2 - cationWidth + 11;
 
-        // Calculate y pos
+        // Calculate y pos, considering the number of elements that have been added
         posY = canvas.height / 2 - (baseHeight / 2 * Math.abs(elementData.charge));
     } else {
         let elementData = elements.find(e => e.name === anion.name);
