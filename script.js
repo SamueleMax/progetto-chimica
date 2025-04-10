@@ -79,54 +79,69 @@ function renderCanvas() {
 
     // Render cations
     if (cation.name) {
-        const img = new Image();
-        img.src = `assets/${cation.name}.png`;
+        const imgsPos = calcElementsPos('cation', imgScale, canvas);
 
-        const imgPos = calcElementPos('cation', imgScale, canvas);
-
-        img.onload = () => {
-            context.drawImage(img, imgPos.x, imgPos.y, img.naturalWidth * imgScale, img.naturalHeight * imgScale);
-        };
+        imgsPos.forEach((imgPos) => {
+            const img = new Image();
+            img.src = `assets/${cation.name}.png`;
+    
+            img.onload = () => {
+                context.drawImage(img, imgPos.x, imgPos.y, img.naturalWidth * imgScale, img.naturalHeight * imgScale);
+            };
+        });
     }
 
     // Render anions
     if (anion.name) {
-        const img = new Image();
-        img.src = `assets/${anion.name}.png`;
+        const imgsPos = calcElementsPos('anion', imgScale, canvas);
 
-        const imgPos = calcElementPos('anion', imgScale, canvas);
-
-        img.onload = () => {
-            context.drawImage(img, imgPos.x, imgPos.y, img.naturalWidth * imgScale, img.naturalHeight * imgScale);
-        };
+        imgsPos.forEach((imgPos) => {
+            const img = new Image();
+            img.src = `assets/${anion.name}.png`;
+    
+            img.onload = () => {
+                context.drawImage(img, imgPos.x, imgPos.y, img.naturalWidth * imgScale, img.naturalHeight * imgScale);
+            };
+        });
     }
 }
 
-function calcElementPos(type, imgScale, canvas) {
+function calcElementsPos(type, imgScale, canvas) {
     const cationWidth = 1771 * imgScale;
     const anionWidth = 1980 * imgScale;
     const baseHeight = 625 * imgScale; // Base image height (*2 if +2, *3 if +3, etc.)
 
-    let posX = 0;
-    let posY = 0;
+    let positions = [];
 
     if (type === 'cation') {
         let elementData = elements.find(e => e.name === cation.name);
 
-        // Calculate x pos, putting the img in the left half of the canvas
-        posX = canvas.width / 2 - cationWidth + 11;
+        const height = baseHeight * Math.abs(elementData.charge);
 
-        // Calculate y pos, considering the number of elements that have been added
-        posY = canvas.height / 2 - (baseHeight / 2 * Math.abs(elementData.charge));
+        for (let i = 0; i < cation.count; i++) {
+            // Calculate x pos, putting the img in the left half of the canvas
+            let posX = canvas.width / 2 - cationWidth + 11;
+
+            // Calculate y pos, considering the number of elements that have been added
+            // TODO: Center vertically
+            let posY = height * i;
+
+            positions.push({ x: posX, y: posY });
+        }
     } else {
         let elementData = elements.find(e => e.name === anion.name);
 
-        posX = canvas.width / 2 - 11;
+        const height = baseHeight * Math.abs(elementData.charge);
 
-        posY = canvas.height / 2 - (baseHeight / 2 * Math.abs(elementData.charge));
+        for (let i = 0; i < anion.count; i++) {
+            let posX = canvas.width / 2 - 11;
+            let posY = height * i;
+
+            positions.push({ x: posX, y: posY });
+        }
     }
 
-    return { x: posX, y: posY };
+    return positions;
 }
 
 function resetCanvas() {
