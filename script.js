@@ -146,11 +146,70 @@ function calcElementsPos(type, imgScale, canvas) {
 function resetCanvas() {
     cation = { name: '', count: 0 };
     anion = { name: '', count: 0 };
+    document.querySelector('#formula').textContent = 'Formula bilanciata:';
     renderCanvas();
 }
 
 function revealFormula() {
-    document.querySelector('#formula').textContent = `Formula bilanciata: ${calcFormula()}`;
+    document.querySelector('#formula').textContent = calcFormula();
+}
+
+function calcFormula() {
+    if (!cation.name || !anion.name) {
+        return 'Nessun catione o anione selezionato.';
+    }
+
+    const cationData = elements.find(e => e.name === cation.name && e.type === 'cation');
+    const anionData = elements.find(e => e.name === anion.name && e.type === 'anion');
+
+    // Get proper display elements with subscripts already formatted
+    const cationEl = cationData.element;
+    // For anions like SO4, CO3, etc. get the proper representation with subscripts
+    const anionEl = anionData.element.replace(/(\d+)/g, (match) => {
+        return String(match).split('').map(digit => {
+            const subscripts = {
+                '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+                '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'
+            };
+            return subscripts[digit] || digit;
+        }).join('');
+    });
+
+    const cationCharge = Math.abs(cationData.charge);
+    const anionCharge = Math.abs(anionData.charge);
+
+    const gcd = findGCD(cationCharge, anionCharge);
+    const cationSub = anionCharge / gcd;
+    const anionSub = cationCharge / gcd;
+
+    // Convert numbers to subscript Unicode characters
+    const formatSub = (sub) => {
+        if (sub === 1) return '';
+        // Convert number to Unicode subscript
+        return String(sub).split('').map(digit => {
+            const subscripts = {
+                '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄',
+                '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'
+            };
+            return subscripts[digit] || digit;
+        }).join('');
+    };
+
+    let formula = '';
+    formula += cationEl + formatSub(cationSub);
+
+    // Check if anion needs parentheses (compound or has a subscript > 1)
+    const needsParens = anionSub > 1 && (anionEl.match(/[₀₁₂₃₄₅₆₇₈₉]/) || anionEl.length > 2);
+    if (needsParens) {
+        formula += `(${anionEl})${formatSub(anionSub)}`;
+    } else {
+        formula += anionEl + formatSub(anionSub);
+    }
+    return `Formula bilanciata: ${formula}`;
+}
+
+function findGCD(a, b) {
+    return b === 0 ? a : findGCD(b, a % b);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
