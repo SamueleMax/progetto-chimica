@@ -162,6 +162,8 @@ function calcFormula() {
     const cationData = elements.find(e => e.name === cation.name && e.type === 'cation');
     const anionData = elements.find(e => e.name === anion.name && e.type === 'anion');
 
+    // TODO: Just replace all of this with a simple string.replace('4', '₄') or similar
+
     // Get proper display elements with subscripts already formatted
     const cationEl = cationData.element;
     // For anions like SO4, CO3, etc. get the proper representation with subscripts
