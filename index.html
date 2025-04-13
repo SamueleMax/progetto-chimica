@@ -16,34 +16,35 @@
                 <div class="sidebar-elements" id="sidebarElements">
                     <div class="element-twiddle" draggable="true" data-element="Al">
                         <img draggable="false" src="assets/Al.png" alt="Al">
-                        <p>Al</p>
+                        <p>Al³⁺</p>
                     </div>
                     <div draggable="true" data-element="Ba">
                         <img draggable="false" src="assets/Ba.png" alt="Ba">
-                        <p>Ba</p>
+                        <p>Ba²⁺</p>
                     </div>
                     <div draggable="true" data-element="Cl">
                         <img draggable="false" src="assets/Cl.png" alt="Cl">
-                        <p>Cl</p>
+                        <p>Cl⁻</p>
                     </div>
                     <div draggable="true" data-element="CO">
                         <img draggable="false" src="assets/CO.png" alt="CO">
-                        <p>CO₃</p>
+                        <p>CO₃²⁻</p>
                     </div>
                     <div draggable="true" data-element="Na">
                         <img draggable="false" src="assets/Na.png" alt="Na">
-                        <p>Na</p>
+                        <p>Na⁺</p>
                     </div>
                     <div draggable="true" data-element="PO">
                         <img draggable="false" src="assets/PO.png" alt="PO">
-                        <p>PO₄</p>
+                        <p>PO₄³⁻</p>
                     </div>
                     <div draggable="true" data-element="SO">
                         <img draggable="false" src="assets/SO.png" alt="SO">
-                        <p>SO₄</p>
+                        <p>SO₄²⁻</p>
                     </div>
                 </div>
 
+                <button type="button" id="tableButton">Tabella elementi</button>
                 <button type="button" id="resetButton">Resetta</button>
                 <button type="button" id="revealButton">Rivela formula</button>
                 <p id="formula">Formula bilanciata:</p>
@@ -53,7 +54,59 @@
             <canvas id="canvas" width="750" height="100"></canvas>
         </main>
 
+        <!-- Modal for elements table -->
+        <div id="elementsModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <h2>Tabella degli elementi e formule</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Simbolo</th>
+                            <th>Nome</th>
+                            <th>Formula</th>
+                            <th>Nome composto</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Al³⁺</td><td>Alluminio</td><td></td><td></td></tr>
+                        <tr><td>Cl⁻</td><td>Cloro</td><td>AlCl₃</td><td>Cloruro di alluminio</td></tr>
+                        <tr><td>SO₄²⁻</td><td>Solfato</td><td>Al₂(SO₄)₃</td><td>Solfato di alluminio</td></tr>
+                        <tr><td>CO₃²⁻</td><td>Carbonato</td><td>Al₂(CO₃)₃</td><td>Carbonato di alluminio</td></tr>
+                        <tr><td>PO₄³⁻</td><td>Fosfato</td><td>AlPO₄</td><td>Fosfato di alluminio</td></tr>
+                        
+                        <tr><td>Ba²⁺</td><td>Bario</td><td></td><td></td></tr>
+                        <tr><td>Cl⁻</td><td>Cloro</td><td>BaCl₂</td><td>Cloruro di bario</td></tr>
+                        <tr><td>SO₄²⁻</td><td>Solfato</td><td>BaSO₄</td><td>Solfato di bario</td></tr>
+                        <tr><td>CO₃²⁻</td><td>Carbonato</td><td>BaCO₃</td><td>Carbonato di bario</td></tr>
+                        <tr><td>PO₄³⁻</td><td>Fosfato</td><td>Ba₃(PO₄)₂</td><td>Fosfato di bario</td></tr>
+                        
+                        <tr><td>Na⁺</td><td>Sodio</td><td></td><td></td></tr>
+                        <tr><td>Cl⁻</td><td>Cloro</td><td>NaCl</td><td>Cloruro di sodio</td></tr>
+                        <tr><td>SO₄²⁻</td><td>Solfato</td><td>Na₂SO₄</td><td>Solfato di sodio</td></tr>
+                        <tr><td>CO₃²⁻</td><td>Carbonato</td><td>Na₂CO₃</td><td>Carbonato di sodio</td></tr>
+                        <tr><td>PO₄³⁻</td><td>Fosfato</td><td>Na₃PO₄</td><td>Fosfato di sodio</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+
         <script src="script.js"></script>
         <script src="elements.js"></script>
+
+        <!-- Modal script -->
+        <script>
+            const modal = document.getElementById('elementsModal');
+            const span = document.getElementsByClassName('close')[0];
+            
+            document.querySelector('#tableButton').addEventListener('click', () => {
+                modal.style.display = 'block';
+            });
+            
+            document.querySelector('#closeModal').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+        </script>        
     </body>
 </html>
