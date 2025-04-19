@@ -115,7 +115,6 @@ canvas {
 }
 
 /* --- Modal --- */
-/* Modal styles */
 .modal {
     display: none;
     position: fixed;
@@ -125,6 +124,7 @@ canvas {
     top: 0;
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
+    overflow: scroll;
 }
 
 .modal-content {
