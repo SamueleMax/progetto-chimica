@@ -40,5 +40,41 @@ const elements = [
         element: 'PO4',
         type: 'anion',
         charge: -3
+    },
+    {
+        name: 'Li',
+        element: 'Li',
+        type: 'cation',
+        charge: 1
+    },
+    {
+        name: 'OH',
+        element: 'OH',
+        type: 'anion',
+        charge: -1
+    },
+    {
+        name: 'Br',
+        element: 'Br',
+        type: 'anion',
+        charge: -1
+    },
+    {
+        name: 'I',
+        element: 'I',
+        type: 'anion',
+        charge: -1
+    },
+    {
+        name: 'Ca',
+        element: 'Ca',
+        type: 'cation',
+        charge: 2
+    },
+    {
+        name: 'Mg',
+        element: 'Mg',
+        type: 'cation',
+        charge: 2
     }
 ];
